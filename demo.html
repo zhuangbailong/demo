@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>demo</title>
+		<link rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_1852117_1l7vyw8z68b.css" />
+		<link rel="stylesheet" type="text/css" href="css/demo.css" />
+	</head>
+
+	<body>
+		<div id="demo">
+			<div class="content-left">
+				<header>
+					<div class="header-logo">
+						<i class="iconfont icon-google"></i>
+					</div>
+					<ul class="header-nav">
+						<li class="header-nav__item" v-for="(val,index) in navigationBar" :key="val" @click="chooseNav(index)" :class="{'active':navigationBarIndex==index}">{{val}}</li>
+					</ul>
+					<div class="header-search">
+						<input type="search" name="search" placeholder="search...">
+						<i class="iconfont icon-fangdajing"></i>
+					</div>
+				</header>
+				<section>
+					<div class="section-cards">
+						<div class="cards-title">
+							<span>Cards</span>
+							<span>View all cards</span>
+						</div>
+						<ul class="cards-content">
+							<li class="cards-content__item" :style="{background:val.background}" v-for="(val,index) in cardsData" :key="index" v-if="cardsData.length>0">
+								<p class="item-title">Available balance</p>
+								<p class="item-money">${{val.money}}</p>
+								<p class="item-account">{{val.account}}</p>
+								<p class="item-desc">Monzo</p>
+							</li>
+							<li class="cards-content__item cards-addCard">
+								<button class="cards-addCard__btn" @click="addCard">+</button>
+								<span class="cards-addCard__title">Add New Card</span>
+							</li>
+						</ul>
+					</div>
+					<div class="section-main">
+						<div class="main-services">
+							<div class="services-title">
+								<span>Main Services</span>
+								<span>View all</span>
+							</div>
+							<ul class="services-list">
+								<li class="list-item" v-for="val in servicesList" :key="val">
+									<i class="iconfont icon-google"></i>
+									<span class="item-title">{{val}}</span>
+								</li>
+							</ul>
+						</div>
+						<div class="main-chart">
+							<div class="chart-current">
+								<div class="current-title">
+									<span>Current</span>
+									<span>View all</span>
+								</div>
+								<ul class="current-knockdown">
+									<li class="knockdown-item" v-for="(val,index) in knockdownShow" :key="index">
+										<span>{{val.orderNumber}}</span>
+										<div class="line"></div>
+										<span>${{val.money}}</span>
+									</li>
+								</ul>
+							</div>
+							<div class="chart-show">
+								<div class="savings-title">
+									<span>savings</span>
+									<span>View all</span>
+								</div>
+								<div id="chart-container" style="height: 300px;margin-top: -30px;"></div>
+							</div>
+						</div>
+
+					</div>
+				</section>
+			</div>
+			<div class="pay-right"></div>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script type="text/javascript">
+			new Vue({
+				el: "#demo",
+				data: {
+					navigationBar: ["Dashboard", "Services", "History", "Actions"],
+					navigationBarIndex: 0,
+					cardsData: [{
+						money: 2200,
+						account: "0000111122223334",
+						background: '#ff0202'
+					}, {
+						money: 1300.89,
+						account: "0000111122223367",
+						background: '#dc85d2'
+					}],
+					servicesList: ["Transactions", "Utility", "Loans", "Deposits", "Fast transfer", "Exchange"],
+					knockdownShow: [{
+						orderNumber: "123456789",
+						money: 2200.01
+					}, {
+						orderNumber: "123456789",
+						money: 2200.01
+					}, {
+						orderNumber: "123456789",
+						money: 2200.01
+					}]
+				},
+				methods: {
+					chooseNav(index) {
+						if(this.navigationBarIndex != index) this.navigationBarIndex = index
+					},
+					addCard() {
+						this.cardsData.push({
+							money: 1300.89,
+							account: "0000111122223367",
+							background: 'yellow'
+						})
+					}
+				},
+				created() {
+					this.cardsData.forEach(function(val) {
+						val.account = `${"*".repeat(val.account.length-2).replace(/(.{4})/g, `
+						$1 `)}${val.account.length%4?"":""}${val.account.slice(-2)}`
+					})
+				}
+			})
+		</script>
+		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+		<script type="text/javascript">
+			var myChart = echarts.init(document.getElementById("chart-container"));
+			myChart.setOption({
+				xAxis: {
+					type: 'category',
+					data: ['$10', '$20', '$30', '$40', '$50', '$60'],
+					axisLine: {
+						show: false
+					},
+					axisTick: {
+						show: false
+					}
+				},
+				yAxis: {
+					type: 'value',
+					axisLine: {
+						show: false
+					},
+					axisTick: {
+						show: false
+					},
+					splitLine: {
+						lineStyle: {
+							type: 'dashed'
+						}
+					},
+					axisLabel: {
+						show: true,
+						interval: 'auto',
+						formatter: '{value} %'
+					},
+					show: true,
+					min: 0,
+					max: 100,
+					interval: 25,
+					splitNumber: 5
+				},
+				series: [{
+					data: [3, 26, 21, 50, 33, 78],
+					type: 'line',
+					itemStyle: {
+						normal: {
+							color: "#2fd471",
+							lineStyle: {
+								color: "#2fd471"
+							}
+						}
+					},
+					smooth: true
+				}]
+			}, true)
+		</script>
+	</body>
+
+</html>
